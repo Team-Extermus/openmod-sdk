@@ -101,6 +101,7 @@ void CAchievementNotificationPanel::FireGameEvent( IGameEvent * event )
 		int iMax = event->GetInt( "max_val" );
 		wchar_t szLocalizedName[256]=L"";
 
+#ifndef OPENMOD
 		if ( IsPC() )
 		{
 			// shouldn't ever get achievement progress if steam not running and user logged in, but check just in case
@@ -114,9 +115,10 @@ void CAchievementNotificationPanel::FireGameEvent( IGameEvent * event )
 				steamapicontext->SteamUserStats()->IndicateAchievementProgress( pchName, iCur, iMax );
 			}
 		}
-		else 
+		else
+#endif // !OPENMOD
 		{
-			// on X360 we need to show our own achievement progress UI
+			// on X360/Open Mod we need to show our own achievement progress UI
 
 			const wchar_t *pchLocalizedName = ACHIEVEMENT_LOCALIZED_NAME_FROM_STR( pchName );
 			Assert( pchLocalizedName );

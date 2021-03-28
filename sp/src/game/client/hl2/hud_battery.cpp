@@ -1,27 +1,25 @@
 //========= Copyright Valve Corporation, All rights reserved. ============//
 //
-// Purpose: 
+// Purpose: implementation of CHudBattery class
 //
 // $NoKeywords: $
 //
 //=============================================================================//
-//
-// battery.cpp
-//
-// implementation of CHudBattery class
-//
 #include "cbase.h"
 #include "hud.h"
 #include "hudelement.h"
 #include "hud_macros.h"
 #include "hud_numericdisplay.h"
 #include "iclientmode.h"
-
 #include "vgui_controls/AnimationController.h"
 #include "vgui/ILocalize.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
+
+#ifdef OPENMOD
+using namespace vgui;
+#endif // OPENMOD
 
 #define INIT_BAT	-1
 
@@ -38,12 +36,26 @@ public:
 	void Reset( void );
 	void VidInit( void );
 	void OnThink( void );
+#ifdef OPENMOD
+	void Paint( void );
+	void ApplySchemeSettings( IScheme *scheme );
+#endif // OPENMOD
 	void MsgFunc_Battery(bf_read &msg );
 	bool ShouldDraw();
 	
 private:
 	int		m_iBat;	
 	int		m_iNewBat;
+
+#ifdef OPENMOD
+	CHudTexture *m_pBatteryIcon;
+
+	CPanelAnimationVarAliasType( float, icon_xpos, "icon_xpos", "0", "proportional_float" );
+	CPanelAnimationVarAliasType( float, icon_ypos, "icon_ypos", "0", "proportional_float" );
+
+	float icon_tall;
+	float icon_wide;
+#endif // OPENMOD
 };
 
 DECLARE_HUDELEMENT( CHudBattery );
@@ -66,6 +78,10 @@ void CHudBattery::Init( void )
 	Reset();
 	m_iBat		= INIT_BAT;
 	m_iNewBat   = 0;
+#ifdef OPENMOD
+	icon_tall	= 0;
+	icon_wide	= 0;
+#endif //OPENMOD
 }
 
 //-----------------------------------------------------------------------------
@@ -76,6 +92,29 @@ void CHudBattery::Reset( void )
 	SetLabelText(g_pVGuiLocalize->Find("#Valve_Hud_SUIT"));
 	SetDisplayValue(m_iBat);
 }
+
+#ifdef OPENMOD
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+void CHudBattery::ApplySchemeSettings( IScheme *scheme )
+{
+	BaseClass::ApplySchemeSettings( scheme );
+
+	if( !m_pBatteryIcon )
+	{
+		m_pBatteryIcon = gHUD.GetIcon( "item_battery" );
+	}
+
+	if( m_pBatteryIcon )
+	{
+
+		icon_tall = GetTall() - YRES(2);
+		float scale = icon_tall / (float)m_pBatteryIcon->Height();
+		icon_wide = ( scale ) * (float)m_pBatteryIcon->Width();
+	}
+}
+#endif //OPENMOD
 
 //-----------------------------------------------------------------------------
 // Purpose: 
@@ -137,6 +176,22 @@ void CHudBattery::OnThink( void )
 
 	SetDisplayValue(m_iBat);
 }
+
+#ifdef OPENMOD
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+void CHudBattery::Paint( void )
+{
+	if( m_pBatteryIcon )
+	{
+		m_pBatteryIcon->DrawSelf( icon_xpos, icon_ypos, icon_wide, icon_tall, GetFgColor() );
+	}
+
+	//draw the health icon
+	BaseClass::Paint();
+}
+#endif //OPENMOD
 
 //-----------------------------------------------------------------------------
 // Purpose: 

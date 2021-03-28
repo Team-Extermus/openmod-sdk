@@ -5,8 +5,7 @@
 //-----------------------------------------------------------------------------
 
 $Macro SRCDIR		"..\.."
-$Macro GAMENAME 	"episodic" [!$SOURCESDK]
-$Macro GAMENAME 	"mod_episodic" [$SOURCESDK]
+$Macro GAMENAME 	"openmod"
 
 $Include "$SRCDIR\game\server\server_base.vpc"
 
@@ -15,11 +14,13 @@ $Configuration
 	$Compiler
 	{
 		$AdditionalIncludeDirectories	"$BASE;$SRCDIR\game\shared\hl2;$SRCDIR\game\shared\episodic;.\hl2;.\episodic"
+		$AdditionalIncludeDirectories	"$BASE;.\openmod;$SRCDIR\game\shared\openmod"
 		$PreprocessorDefinitions		"$BASE;HL2_DLL;HL2_EPISODIC;USES_SAVERESTORE"
+		$PreprocessorDefinitions		"$BASE;OPENMOD;GLOWS_ENABLE"
 	}
 }
 
-$Project "Server (Episodic)"
+$Project "Server"
 {
 	$Folder	"Source Files"
 	{
@@ -50,6 +51,7 @@ $Project "Server (Episodic)"
 
 		$Folder	"HL2 DLL"
 		{
+			$File	"$SRCDIR\game\shared\hl2\achievements_hl2.cpp"
 			$File	"$SRCDIR\game\shared\episodic\achievements_ep1.cpp"
 			$File	"$SRCDIR\game\shared\episodic\achievements_ep2.cpp"
 			$File	"$SRCDIR\game\shared\episodic\achievements_epx.cpp"
@@ -298,6 +300,12 @@ $Project "Server (Episodic)"
 				$File	"hl2\weapon_flaregun.cpp"
 				$File	"hl2\weapon_flaregun.h"
 			}
+		}
+		
+		$Folder	"Open Mod"
+		{
+			$File	"$SRCDIR\game\shared\openmod\gamemounter.cpp"
+			$File	"$SRCDIR\game\shared\openmod\gamemounter.h"
 		}
 	}
 }

@@ -27,11 +27,14 @@ class CAchievementHLXKillWithPhysicsObjects : public CBaseAchievement
 		SetInflictorFilter( "prop_physics" );
 		SetGoal( 30 );
 		
+#ifndef OPENMOD
 		if ( IsPC() )
 		{
 			// only in Ep2 for PC. (Shared across HLX for X360.)
 			SetGameDirFilter( "ep2" );
-		}
+		}  
+#endif // !OPENMOD
+
 	}
 
 	virtual void Event_EntityKilled( CBaseEntity *pVictim, CBaseEntity *pAttacker, CBaseEntity *pInflictor, IGameEvent *event )
@@ -55,11 +58,13 @@ class CAchievementHLXKillWithHopper : public CBaseAchievement
 		SetAttackerFilter( "combine_mine" );
 		SetGoal( 1 );
 
+#ifndef OPENMOD
 		if ( IsPC() )
 		{
 			// only in Ep2 for PC. (Shared across HLX for X360.)
 			SetGameDirFilter( "ep2" );
-		}
+		}  
+#endif // !OPENMOD
 	}
 
 	virtual void Event_EntityKilled( CBaseEntity *pVictim, CBaseEntity *pAttacker, CBaseEntity *pInflictor, IGameEvent *event )
@@ -82,11 +87,13 @@ class CAchievementHLXKillWithManhack : public CBaseAchievement
 		SetInflictorFilter( "npc_manhack" );
 		SetGoal( 5 );
 
+#ifndef OPENMOD
 		if ( IsPC() )
 		{
-			// only in HL2 for PC. (Shared across HLX for X360.)
-			SetGameDirFilter( "hl2" );
-		}
+			// only in Ep2 for PC. (Shared across HLX for X360.)
+			SetGameDirFilter( "ep2" );
+		}  
+#endif // !OPENMOD
 	}
 
 	virtual void Event_EntityKilled( CBaseEntity *pVictim, CBaseEntity *pAttacker, CBaseEntity *pInflictor, IGameEvent *event )
@@ -112,11 +119,13 @@ protected:
 		SetVictimFilter( "npc_combine_s" );
 		SetGoal( 1 );
 
+#ifndef OPENMOD
 		if ( IsPC() )
 		{
 			// only in Ep2 for PC. (Shared across HLX for X360.)
 			SetGameDirFilter( "ep2" );
-		}
+		}  
+#endif // !OPENMOD
 	}
 
 	virtual void Event_EntityKilled( CBaseEntity *pVictim, CBaseEntity *pAttacker, CBaseEntity *pInflictor, IGameEvent *event ) 
@@ -148,11 +157,13 @@ protected:
 		m_pLastInflictor = NULL;
 		m_iLocalCount = 0;
 
+#ifndef OPENMOD
 		if ( IsPC() )
 		{
-			// only in Ep1 for PC. (Shared across HLX for X360.)
-			SetGameDirFilter( "episodic" );
-		}
+			// only in Ep2 for PC. (Shared across HLX for X360.)
+			SetGameDirFilter( "ep2" );
+		}  
+#endif // !OPENMOD
 	}
 
 	virtual void Event_EntityKilled( CBaseEntity *pVictim, CBaseEntity *pAttacker, CBaseEntity *pInflictor, IGameEvent *event ) 
@@ -190,11 +201,13 @@ protected:
 		SetVictimFilter( "npc_combine_s" );
 		SetGoal( 1 );
 
+#ifndef OPENMOD
 		if ( IsPC() )
 		{
 			// only in Ep2 for PC. (Shared across HLX for X360.)
-			SetGameDirFilter( "episodic" );
-		}
+			SetGameDirFilter( "ep2" );
+		}  
+#endif // !OPENMOD
 	}
 
 	virtual void Event_EntityKilled( CBaseEntity *pVictim, CBaseEntity *pAttacker, CBaseEntity *pInflictor, IGameEvent *event ) 

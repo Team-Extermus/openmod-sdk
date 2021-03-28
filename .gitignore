@@ -67,14 +67,10 @@ config.cfg
 
 # Build folders
 sp/src/.vs/
-sp/src/game/client/Debug_mod_episodic/
-sp/src/game/client/Debug_mod_hl2/
-sp/src/game/client/Release_mod_episodic/
-sp/src/game/client/Release_mod_hl2/
-sp/src/game/server/Debug_mod_episodic/
-sp/src/game/server/Debug_mod_hl2/
-sp/src/game/server/Release_mod_episodic/
-sp/src/game/server/Release_mod_hl2/
+sp/src/game/client/Debug_*/
+sp/src/game/client/Release_*/
+sp/src/game/server/Debug_*/
+sp/src/game/server/Release_*/
 sp/src/*/Debug/
 sp/src/*/Release/
 sp/game/*.dll

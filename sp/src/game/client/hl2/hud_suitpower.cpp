@@ -4,7 +4,6 @@
 //
 // $NoKeywords: $
 //=============================================================================//
-
 #include "cbase.h"
 #include "hud.h"
 #include "hud_suitpower.h"
@@ -43,6 +42,10 @@ void CHudSuitPower::Init( void )
 	m_flSuitPower = SUITPOWER_INIT;
 	m_nSuitPowerLow = -1;
 	m_iActiveSuitDevices = 0;
+#ifdef OPENMOD
+	icon_tall = 0;
+	icon_wide = 0;
+#endif //OPENMOD
 }
 
 //-----------------------------------------------------------------------------
@@ -52,6 +55,29 @@ void CHudSuitPower::Reset( void )
 {
 	Init();
 }
+
+#ifdef OPENMOD
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+void CHudSuitPower::ApplySchemeSettings( IScheme *scheme )
+{
+	BaseClass::ApplySchemeSettings( scheme );
+
+	if( !m_pSprintIcon )
+	{
+		m_pSprintIcon = gHUD.GetIcon( "icon_sprint" );
+	}
+
+	if( m_pSprintIcon )
+	{
+
+		icon_tall = GetTall() - YRES(2);
+		float scale = icon_tall / (float)m_pSprintIcon->Height();
+		icon_wide = ( scale ) * (float)m_pSprintIcon->Width();
+	}
+}
+#endif //OPENMOD
 
 //-----------------------------------------------------------------------------
 // Purpose: Save CPU cycles by letting the HUD system early cull
@@ -152,6 +178,12 @@ void CHudSuitPower::Paint()
 	C_BaseHLPlayer *pPlayer = (C_BaseHLPlayer *)C_BasePlayer::GetLocalPlayer();
 	if ( !pPlayer )
 		return;
+
+#ifdef OPENMOD
+	// Draw the icon
+	if( m_pSprintIcon )
+		m_pSprintIcon->DrawSelf( icon_xpos, icon_ypos, icon_wide, icon_tall, GetFgColor() );
+#endif // OPENMOD
 
 	// get bar chunks
 	int chunkCount = m_flBarWidth / (m_flBarChunkWidth + m_flBarChunkGap);

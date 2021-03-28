@@ -81,6 +81,11 @@
 // Projective textures
 #include "C_Env_Projected_Texture.h"
 
+#ifdef OPENMOD
+// Shader Editor
+#include "ShaderEditor/ShaderEditorSystem.h"
+#endif // OPENMOD
+
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
@@ -1394,6 +1399,14 @@ void CViewRender::ViewDrawScene( bool bDrew3dSkybox, SkyboxVisibility_t nSkyboxV
 	ParticleMgr()->IncrementFrameCode();
 
 	DrawWorldAndEntities( drawSkybox, view, nClearFlags, pCustomVisibility );
+	
+#ifdef OPENMOD
+	VisibleFogVolumeInfo_t fogVolumeInfo;
+	render->GetVisibleFogVolume( view.origin, &fogVolumeInfo );
+	WaterRenderInfo_t info;
+	DetermineWaterRenderInfo( fogVolumeInfo, info );
+	g_ShaderEditorSystem->CustomViewRender( &g_CurrentViewID, fogVolumeInfo, info );
+#endif // OPENMOD
 
 	// Disable fog for the rest of the stuff
 	DisableFog();
@@ -2073,6 +2086,9 @@ void CViewRender::RenderView( const CViewSetup &view, int nClearFlags, int whatT
 			if ( ( bDrew3dSkybox = pSkyView->Setup( view, &nClearFlags, &nSkyboxVisible ) ) != false )
 			{
 				AddViewToScene( pSkyView );
+#ifdef OPENMOD
+				g_ShaderEditorSystem->UpdateSkymask(false, view.x, view.y, view.width, view.height);
+#endif // OPENMOD
 			}
 			SafeRelease( pSkyView );
 #endif
@@ -2137,6 +2153,10 @@ void CViewRender::RenderView( const CViewSetup &view, int nClearFlags, int whatT
 #endif
 		DrawViewModels( view, whatToDraw & RENDERVIEW_DRAWVIEWMODEL );
 
+#ifdef OPENMOD
+		g_ShaderEditorSystem->UpdateSkymask( bDrew3dSkybox, view.x, view.y, view.width, view.height );
+#endif // OPENMOD
+
 		DrawUnderwaterOverlay();
 
 		PixelVisibility_EndScene();
@@ -2173,6 +2193,10 @@ void CViewRender::RenderView( const CViewSetup &view, int nClearFlags, int whatT
 			}
 			pRenderContext.SafeRelease();
 		}
+		
+#ifdef OPENMOD
+		g_ShaderEditorSystem->CustomPostRender();
+#endif // OPENMOD
 
 		// And here are the screen-space effects
 

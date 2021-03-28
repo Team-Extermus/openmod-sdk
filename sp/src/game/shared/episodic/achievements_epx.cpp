@@ -24,11 +24,13 @@ protected:
 		SetFlags( ACH_SAVE_GLOBAL );
 		SetGoal( 1 );
 
+#ifndef OPENMOD
 		if ( IsPC() )
 		{
-			// only in Ep2 for PC. (Shared across EPX for X360.)
+			// only in Ep2 for PC. (Shared across HLX for X360.)
 			SetGameDirFilter( "ep2" );
-		}
+		}  
+#endif // !OPENMOD
 	}
 
 	virtual void ListenForEvents()
@@ -69,11 +71,13 @@ protected:
 		SetFlags( ACH_SAVE_WITH_GAME );
 		SetGoal( 15 );
 
+#ifndef OPENMOD
 		if ( IsPC() )
 		{
-			// only in Ep1 for PC. (Shared across EPX for X360.)
-			SetGameDirFilter( "episodic" );
-		}
+			// only in Ep1 for PC. (Shared across HLX for X360.)
+			SetGameDirFilter( "ep2" );
+		}  
+#endif // !OPENMOD
 	}
 
 	virtual void ListenForEvents()

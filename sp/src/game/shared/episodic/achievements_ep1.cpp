@@ -21,7 +21,9 @@ protected:
 		SetFlags( ACH_LISTEN_PLAYER_KILL_ENEMY_EVENTS | ACH_SAVE_WITH_GAME );
 		SetInflictorFilter( "prop_physics" );
 		SetVictimFilter( "npc_antlion" );
+#ifndef OPENMOD
 		SetGameDirFilter( "episodic" );
+#endif // !OPENMOD
 		SetGoal( 15 );
 	}
 	virtual void Event_EntityKilled( CBaseEntity *pVictim, CBaseEntity *pAttacker, CBaseEntity *pInflictor, IGameEvent *event ) 
@@ -45,7 +47,9 @@ protected:
 	{
 		SetFlags( ACH_LISTEN_KILL_ENEMY_EVENTS | ACH_SAVE_WITH_GAME );
 		SetInflictorEntityNameFilter( "sniper_alyx" );
+#ifndef OPENMOD
 		SetGameDirFilter( "episodic" );
+#endif // !OPENMOD
 		SetGoal( 30 );
 	}
 };
@@ -58,7 +62,9 @@ protected:
 	void Init() 
 	{
 		SetFlags( ACH_LISTEN_MAP_EVENTS | ACH_LISTEN_KILL_EVENTS | ACH_SAVE_WITH_GAME );
+#ifndef OPENMOD
 		SetGameDirFilter( "episodic" );
+#endif // !OPENMOD
 		SetGoal( 1 );
 		SetVictimFilter( "npc_citizen" );
 	}
@@ -86,7 +92,9 @@ protected:
 	void Init() 
 	{
 		SetFlags( ACH_LISTEN_MAP_EVENTS | ACH_SAVE_WITH_GAME );
+#ifndef OPENMOD
 		SetGameDirFilter( "episodic" );
+#endif // !OPENMOD
 		SetGoal( 1 );
 	}
 
@@ -118,6 +126,7 @@ protected:
 };
 DECLARE_ACHIEVEMENT( CAchievementEp1BeatGameOneBullet, ACHIEVEMENT_EP1_BEAT_GAME_ONEBULLET, "EP1_BEAT_GAME_ONEBULLET", 40 );
 
+#ifndef OPENMOD
 // Ep1-specific macro that sets game dir filter.  We need this because Ep1/Ep2/... share a binary so we need runtime check against running game.
 #define DECLARE_EP1_MAP_EVENT_ACHIEVEMENT( achievementID, achievementName, iPointValue )					\
 	DECLARE_MAP_EVENT_ACHIEVEMENT_( achievementID, achievementName, "episodic", iPointValue, false )
@@ -129,5 +138,15 @@ DECLARE_EP1_MAP_EVENT_ACHIEVEMENT( ACHIEVEMENT_EP1_BEAT_CITADELCORE_NOSTALKERKIL
 DECLARE_EP1_MAP_EVENT_ACHIEVEMENT( ACHIEVEMENT_EP1_BEAT_GARAGEELEVATORSTANDOFF, "EP1_BEAT_GARAGEELEVATORSTANDOFF", 10 );
 DECLARE_EP1_MAP_EVENT_ACHIEVEMENT( ACHIEVEMENT_EP1_BEAT_HOSPITALATTICGUNSHIP, "EP1_BEAT_HOSPITALATTICGUNSHIP", 5 );
 DECLARE_EP1_MAP_EVENT_ACHIEVEMENT( ACHIEVEMENT_EP1_BEAT_GAME, "EP1_BEAT_GAME", 20 );
+#else
+// achievements which are won by a map event firing once
+DECLARE_MAP_EVENT_ACHIEVEMENT( ACHIEVEMENT_EP1_BEAT_MAINELEVATOR, "EP1_BEAT_MAINELEVATOR", 5 );
+DECLARE_MAP_EVENT_ACHIEVEMENT( ACHIEVEMENT_EP1_BEAT_CITADELCORE, "EP1_BEAT_CITADELCORE", 5 );
+DECLARE_MAP_EVENT_ACHIEVEMENT( ACHIEVEMENT_EP1_BEAT_CITADELCORE_NOSTALKERKILLS, "EP1_BEAT_CITADELCORE_NOSTALKERKILLS", 10 );
+DECLARE_MAP_EVENT_ACHIEVEMENT( ACHIEVEMENT_EP1_BEAT_GARAGEELEVATORSTANDOFF, "EP1_BEAT_GARAGEELEVATORSTANDOFF", 10 );
+DECLARE_MAP_EVENT_ACHIEVEMENT( ACHIEVEMENT_EP1_BEAT_HOSPITALATTICGUNSHIP, "EP1_BEAT_HOSPITALATTICGUNSHIP", 5 );
+DECLARE_MAP_EVENT_ACHIEVEMENT( ACHIEVEMENT_EP1_BEAT_GAME, "EP1_BEAT_GAME", 20 );
+#endif // !OPENMOD
+
 
 #endif // GAME_DLL

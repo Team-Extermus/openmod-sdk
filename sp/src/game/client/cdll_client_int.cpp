@@ -151,6 +151,10 @@
 #include "vscript_client.h"
 #endif
 
+#ifdef OPENMOD
+#include "gamemounter.h"
+#endif
+
 extern vgui::IInputInternal *g_InputInternal;
 
 //=============================================================================
@@ -998,6 +1002,10 @@ int CHLClient::Init( CreateInterfaceFn appSystemFactory, CreateInterfaceFn physi
 	{
 		return false;
 	}
+	
+#ifdef OPENMOD
+	AddRequiredSearchPaths();
+#endif
 
 	if ( CommandLine()->FindParm( "-textmode" ) )
 		g_bTextMode = true;

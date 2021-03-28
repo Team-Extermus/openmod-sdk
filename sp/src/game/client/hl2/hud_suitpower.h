@@ -26,6 +26,9 @@ public:
 	virtual void	Init( void );
 	virtual void	Reset( void );
 	virtual void	OnThink( void );
+#ifdef OPENMOD
+	virtual void	ApplySchemeSettings( vgui::IScheme *scheme );
+#endif // OPENMOD
 	bool			ShouldDraw( void );
 
 protected:
@@ -49,9 +52,21 @@ private:
 	CPanelAnimationVarAliasType( float, text2_ypos, "text2_ypos", "40", "proportional_float" );
 	CPanelAnimationVarAliasType( float, text2_gap, "text2_gap", "10", "proportional_float" );
 
+#ifdef OPENMOD
+	CPanelAnimationVarAliasType( float, icon_xpos, "icon_xpos", "0", "proportional_float" );
+	CPanelAnimationVarAliasType( float, icon_ypos, "icon_ypos", "0", "proportional_float" );
+#endif // OPENMOD
+
 	float m_flSuitPower;
 	int m_nSuitPowerLow;
 	int m_iActiveSuitDevices;
+
+#ifdef OPENMOD
+	CHudTexture *m_pSprintIcon;
+
+	float icon_tall;
+	float icon_wide;
+#endif // OPENMOD
 };	
 
 #endif // HUD_SUITPOWER_H
