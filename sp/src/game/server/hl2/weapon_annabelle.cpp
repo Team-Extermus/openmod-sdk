@@ -40,6 +40,22 @@ public:
 
 	virtual const Vector& GetBulletSpread( void )
 	{
+#ifdef OPENMOD
+		static Vector Playercone;
+
+		if ( m_bIsIronsighted )
+		{
+			Playercone = VECTOR_CONE_5DEGREES;
+		}
+		else
+		{
+			Playercone = VECTOR_CONE_10DEGREES;
+		}
+
+		if ( GetOwner()->IsPlayer() )
+			return Playercone;
+#endif // OPENMOD
+
 		static Vector cone = vec3_origin;
 		return cone;
 	}

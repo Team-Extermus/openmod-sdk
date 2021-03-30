@@ -676,6 +676,10 @@ void CHL2_Player::Precache( void )
 	PrecacheScriptSound( "HL2Player.TrainUse" );
 	PrecacheScriptSound( "HL2Player.Use" );
 	PrecacheScriptSound( "HL2Player.BurnPain" );
+#ifdef OPENMOD
+	PrecacheScriptSound( "Player.IronSightIn" );
+	PrecacheScriptSound( "Player.IronSightOut" );
+#endif //OPENMOD
 }
 
 //-----------------------------------------------------------------------------
@@ -3511,6 +3515,16 @@ bool CHL2_Player::ClientCommand( const CCommand &args )
 		}
 		return true;
 	}
+#ifdef OPENMOD
+	else if( !Q_stricmp( args[0], "toggle_ironsight" ) )
+	{
+		CBaseCombatWeapon *pWeapon = GetActiveWeapon();
+		if( pWeapon != NULL )
+			pWeapon->ToggleIronsights();
+
+		return true;
+	}
+#endif // OPENMOD
 
 	return BaseClass::ClientCommand( args );
 }

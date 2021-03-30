@@ -53,8 +53,21 @@ public:
 
 	virtual const Vector& GetBulletSpread( void )
 	{
+#ifdef OPENMOD
+		if ( m_bIsIronsighted )
+		{
+			static const Vector cone = VECTOR_CONE_1DEGREES;
+			return cone;
+		}
+		else
+		{
+			static const Vector cone = VECTOR_CONE_5DEGREES;
+			return cone;
+		}
+#else
 		static const Vector cone = VECTOR_CONE_5DEGREES;
 		return cone;
+#endif // OPENMOD
 	}
 
 	const WeaponProficiencyInfo_t *GetProficiencyValues();

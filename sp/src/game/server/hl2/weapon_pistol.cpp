@@ -27,7 +27,9 @@
 #define	PISTOL_ACCURACY_SHOT_PENALTY_TIME		0.2f	// Applied amount of time each shot adds to the time we must recover from
 #define	PISTOL_ACCURACY_MAXIMUM_PENALTY_TIME	1.5f	// Maximum penalty to deal out
 
+#ifndef OPENMOD
 ConVar	pistol_use_new_accuracy( "pistol_use_new_accuracy", "1" );
+#endif // !OPENMOD
 
 //-----------------------------------------------------------------------------
 // CWeaponPistol
@@ -73,6 +75,23 @@ public:
 			
 		static Vector cone;
 
+#ifdef OPENMOD
+		if ( m_bIsIronsighted )
+		{
+			cone = VECTOR_CONE_3DEGREES;
+		}
+		else
+		{
+			float ramp = RemapValClamped(	m_flAccuracyPenalty, 
+											0.0f, 
+											PISTOL_ACCURACY_MAXIMUM_PENALTY_TIME, 
+											0.0f, 
+											1.0f ); 
+
+			// We lerp from very accurate to inaccurate over time
+			VectorLerp( VECTOR_CONE_1DEGREES, VECTOR_CONE_6DEGREES, ramp, cone );
+		}
+#else
 		if ( pistol_use_new_accuracy.GetBool() )
 		{
 			float ramp = RemapValClamped(	m_flAccuracyPenalty, 
@@ -89,6 +108,7 @@ public:
 			// Old value
 			cone = VECTOR_CONE_4DEGREES;
 		}
+#endif // OPENMOD
 
 		return cone;
 	}

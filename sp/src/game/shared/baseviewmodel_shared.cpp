@@ -382,6 +382,42 @@ void CBaseViewModel::SendViewModelMatchingSequence( int sequence )
 #include "ivieweffects.h"
 #endif
 
+#ifdef OPENMOD
+#if defined( CLIENT_DLL )
+void CBaseViewModel::CalcIronsights( Vector &pos, QAngle &ang )
+{
+	CBaseCombatWeapon *pWeapon = GetOwningWeapon();
+	if ( !pWeapon )
+		return;
+
+	//get delta time for interpolation
+	float delta = ( gpGlobals->curtime - pWeapon->m_flIronsightedTime ) * 2.5f; //modify this value to adjust how fast the interpolation is
+	float exp = ( pWeapon->IsIronsighted() ) ? 
+		( delta > 1.0f ) ? 1.0f : delta : //normal blending
+		( delta > 1.0f ) ? 0.0f : 1.0f - delta; //reverse interpolation
+
+	if( exp <= 0.001f ) //fully not ironsighted; save performance
+		return;
+
+	Vector newPos = pos;
+	QAngle newAng = ang;
+
+	Vector vForward, vRight, vUp, vOffset;
+	AngleVectors( newAng, &vForward, &vRight, &vUp );
+	vOffset = pWeapon->GetIronsightPositionOffset();
+
+	newPos += vForward * vOffset.x;
+	newPos += vRight * vOffset.y;
+	newPos += vUp * vOffset.z;
+	newAng += pWeapon->GetIronsightAngleOffset();
+	//fov is handled by CBaseCombatWeapon
+
+	pos += ( newPos - pos ) * exp;
+	ang += ( newAng - ang ) * exp;
+}
+#endif
+#endif // OPENMOD
+
 void CBaseViewModel::CalcViewModelView( CBasePlayer *owner, const Vector& eyePosition, const QAngle& eyeAngles )
 {
 	// UNDONE: Calc this on the server?  Disabled for now as it seems unnecessary to have this info on the server
@@ -392,7 +428,12 @@ void CBaseViewModel::CalcViewModelView( CBasePlayer *owner, const Vector& eyePos
 
 	CBaseCombatWeapon *pWeapon = m_hWeapon.Get();
 	//Allow weapon lagging
+#ifdef OPENMOD
+	//only if not in ironsight-mode
+	if( pWeapon == NULL || !pWeapon->IsIronsighted() )
+#else
 	if ( pWeapon != NULL )
+#endif // OPENMOD
 	{
 #if defined( CLIENT_DLL )
 		if ( !prediction->InPrediction() )
@@ -423,6 +464,11 @@ void CBaseViewModel::CalcViewModelView( CBasePlayer *owner, const Vector& eyePos
 	{
 		g_ClientVirtualReality.OverrideViewModelTransform( vmorigin, vmangles, pWeapon && pWeapon->ShouldUseLargeViewModelVROverride() );
 	}
+
+	//Allow weapon lagging
+#ifdef OPENMOD
+	CalcIronsights( vmorigin, vmangles );
+#endif // OPENMOD
 
 	SetLocalOrigin( vmorigin );
 	SetLocalAngles( vmangles );

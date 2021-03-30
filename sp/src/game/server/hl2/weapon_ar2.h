@@ -57,8 +57,19 @@ public:
 	virtual const Vector& GetBulletSpread( void )
 	{
 		static Vector cone;
-		
+
+#ifdef OPENMOD
+		if ( m_bIsIronsighted )
+		{
+			cone = VECTOR_CONE_1DEGREES;
+		}
+		else
+		{
+			cone = VECTOR_CONE_3DEGREES;
+		}
+#else
 		cone = VECTOR_CONE_3DEGREES;
+#endif // OPENMOD
 
 		return cone;
 	}

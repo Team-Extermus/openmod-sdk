@@ -243,8 +243,21 @@ public:
 
 	virtual const Vector& GetBulletSpread( void )
 	{
-		static Vector cone = VECTOR_CONE_3DEGREES;
+#ifdef OPENMOD
+		if ( m_bIsIronsighted )
+		{
+			static const Vector cone = VECTOR_CONE_1DEGREES;
+			return cone;
+		}
+		else
+		{
+			static const Vector cone = VECTOR_CONE_3DEGREES;
+			return cone;
+		}
+#else
+		static const Vector cone = VECTOR_CONE_3DEGREES;
 		return cone;
+#endif // OPENMOD
 	}
 	
 	CBaseEntity *GetMissile( void ) { return m_hMissile; }

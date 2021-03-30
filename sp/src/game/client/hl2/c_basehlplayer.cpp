@@ -58,6 +58,28 @@ void CC_DropPrimary( void )
 
 static ConCommand dropprimary("dropprimary", CC_DropPrimary, "dropprimary: Drops the primary weapon of the player.");
 
+#ifdef OPENMOD
+//-----------------------------------------------------------------------------
+// Purpose: Toggle IronSights
+//-----------------------------------------------------------------------------
+void CC_ToggleIronSights( void )
+{
+	CBasePlayer* pPlayer = C_BasePlayer::GetLocalPlayer();
+	if( pPlayer == NULL )
+		return;
+
+	CBaseCombatWeapon *pWeapon = pPlayer->GetActiveWeapon();
+	if( pWeapon == NULL )
+		return;
+
+	pWeapon->ToggleIronsights();
+
+	engine->ServerCmd( "toggle_ironsight" ); //forward to server
+}
+
+static ConCommand toggle_ironsight( "toggle_ironsight", CC_ToggleIronSights );
+#endif // OPENMOD
+
 //-----------------------------------------------------------------------------
 // Constructor
 //-----------------------------------------------------------------------------

@@ -52,6 +52,11 @@ public:
 	virtual void			SendViewModelMatchingSequence( int sequence );
 	virtual void			SetWeaponModel( const char *pszModelname, CBaseCombatWeapon *weapon );
 
+#ifdef OPENMOD
+#if defined( CLIENT_DLL )
+	virtual void			CalcIronsights( Vector &pos, QAngle &ang );
+#endif
+#endif // OPENMOD
 	virtual void			CalcViewModelLag( Vector& origin, QAngle& angles, QAngle& original_angles );
 	virtual void			CalcViewModelView( CBasePlayer *owner, const Vector& eyePosition, 
 								const QAngle& eyeAngles );

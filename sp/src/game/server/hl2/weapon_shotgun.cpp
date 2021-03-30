@@ -50,7 +50,21 @@ public:
 	virtual const Vector& GetBulletSpread( void )
 	{
 		static Vector vitalAllyCone = VECTOR_CONE_3DEGREES;
-		static Vector cone = VECTOR_CONE_10DEGREES;
+
+#ifdef OPENMOD
+		static Vector cone;
+
+		if ( m_bIsIronsighted )
+		{
+			cone = VECTOR_CONE_5DEGREES;
+		}
+		else
+		{
+			cone = VECTOR_CONE_10DEGREES;
+		}
+#else
+		static const Vector cone = VECTOR_CONE_10DEGREES;
+#endif // OPENMOD
 
 		if( GetOwner() && (GetOwner()->Classify() == CLASS_PLAYER_ALLY_VITAL) )
 		{

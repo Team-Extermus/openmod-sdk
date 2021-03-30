@@ -204,9 +204,15 @@ int CWeaponAlyxGun::WeaponRangeAttack2Condition( float flDot, float flDist )
 // Purpose: 
 // Input  : *pOperator - 
 //-----------------------------------------------------------------------------
+#ifdef OPENMOD
+void CWeaponAlyxGun::FireNPCPrimaryAttack( CBaseCombatCharacter *pOperator, Vector &vecShootOrigin, Vector &vecShootDir, bool bUseWeaponAngles )
+#else
 void CWeaponAlyxGun::FireNPCPrimaryAttack( CBaseCombatCharacter *pOperator, bool bUseWeaponAngles )
+#endif // OPENMOD
 {
+#ifndef OPENMOD
   	Vector vecShootOrigin, vecShootDir;
+#endif // !OPENMOD
 	CAI_BaseNPC *npc = pOperator->MyNPCPointer();
 	ASSERT( npc != NULL );
 
@@ -255,6 +261,7 @@ void CWeaponAlyxGun::FireNPCPrimaryAttack( CBaseCombatCharacter *pOperator, bool
 //-----------------------------------------------------------------------------
 void CWeaponAlyxGun::Operator_ForceNPCFire( CBaseCombatCharacter *pOperator, bool bSecondary )
 {
+#ifndef OPENMOD
 	// Ensure we have enough rounds in the clip
 	m_iClip1++;
 
@@ -265,6 +272,24 @@ void CWeaponAlyxGun::Operator_ForceNPCFire( CBaseCombatCharacter *pOperator, boo
 	}
 
 	FireNPCPrimaryAttack( pOperator, true );
+#else
+	// Ensure we have enough rounds in the clip
+	m_iClip1++;
+
+	// HACK: We need the gun to fire its muzzle flash
+	if ( bSecondary == false )
+	{
+		SetActivity( ACT_RANGE_ATTACK_PISTOL, 0.0f );
+	}
+
+	Vector vecShootOrigin, vecShootDir;
+	QAngle	angShootDir;
+
+	GetAttachment( LookupAttachment( "muzzle" ), vecShootOrigin, angShootDir );
+	AngleVectors( angShootDir, &vecShootDir );
+
+	FireNPCPrimaryAttack( pOperator, vecShootOrigin, vecShootDir, true );
+#endif //OPENMOD
 }
 
 //-----------------------------------------------------------------------------
@@ -274,7 +299,19 @@ void CWeaponAlyxGun::Operator_HandleAnimEvent( animevent_t *pEvent, CBaseCombatC
 	{
 		case EVENT_WEAPON_PISTOL_FIRE:
 		{
+#ifdef OPENMOD
+			Vector vecShootOrigin, vecShootDir;
+			vecShootOrigin = pOperator->Weapon_ShootPosition();
+
+			CAI_BaseNPC *npc = pOperator->MyNPCPointer();
+			ASSERT( npc != NULL );
+
+			vecShootDir = npc->GetActualShootTrajectory( vecShootOrigin );
+
+			FireNPCPrimaryAttack( pOperator, vecShootOrigin, vecShootDir, false );
+#else
 			FireNPCPrimaryAttack( pOperator, false );
+#endif // OPENMOD
 			break;
 		}
 		
@@ -298,9 +335,28 @@ bool IsAlyxInInjuredMode( void )
 //-----------------------------------------------------------------------------
 const Vector& CWeaponAlyxGun::GetBulletSpread( void )
 {
-	static const Vector cone = VECTOR_CONE_2DEGREES;
-	static const Vector injuredCone = VECTOR_CONE_6DEGREES;
+#ifdef OPENMOD
+	static Vector cone;
+	if ( m_bIsIronsighted )
+	{
+		cone = VECTOR_CONE_4DEGREES;
+	}
+	else
+	{
+		cone = VECTOR_CONE_6DEGREES;
+	}
 
+#else
+	static const Vector cone = VECTOR_CONE_2DEGREES;
+#endif // OPENMOD
+
+#ifdef OPENMOD
+	static const Vector AlyxCone = VECTOR_CONE_2DEGREES;
+	if( GetOwner() && (GetOwner()->Classify() == CLASS_PLAYER_ALLY_VITAL) )
+		return AlyxCone;
+#endif // OPENMOD
+
+	static const Vector injuredCone = VECTOR_CONE_6DEGREES;
 	if ( IsAlyxInInjuredMode() )
 		return injuredCone;
 

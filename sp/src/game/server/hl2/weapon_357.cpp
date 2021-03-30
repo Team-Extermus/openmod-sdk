@@ -51,9 +51,25 @@ public:
 
 	virtual const Vector& GetBulletSpread( void )
 	{
+
+#ifdef OPENMOD
+		if ( m_bIsIronsighted )
+		{
+			static Vector cone = VECTOR_CONE_10DEGREES;
+			if ( !GetOwner() || !GetOwner()->IsNPC() )
+				return cone;
+		}
+		else
+		{
+			static Vector cone = VECTOR_CONE_15DEGREES;
+			if ( !GetOwner() || !GetOwner()->IsNPC() )
+				return cone;
+		}
+#else
 		static Vector cone = VECTOR_CONE_15DEGREES;
-		if (!GetOwner() || !GetOwner()->IsNPC())
+		if ( !GetOwner() || !GetOwner()->IsNPC() )
 			return cone;
+#endif // OPENMOD
 
 		static Vector AllyCone = VECTOR_CONE_2DEGREES;
 		static Vector NPCCone = VECTOR_CONE_5DEGREES;

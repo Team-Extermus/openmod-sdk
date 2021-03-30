@@ -132,6 +132,13 @@ public:
 // TF2 specific
 	bool					bShowUsageHint;							// if true, then when you receive the weapon, show a hint about it
 
+// Open Mod specific
+#ifdef OPENMOD
+	Vector					vecIronsightPosOffset;
+	QAngle					angIronsightAngOffset;
+	float					flIronsightFOVOffset;
+#endif // OPENMOD
+
 // SERVER DLL
 
 };
