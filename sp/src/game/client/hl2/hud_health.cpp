@@ -94,6 +94,7 @@ void CHudHealth::Reset()
 	icon_wide		= 0;
 #endif //OPENMOD
 
+#ifndef OPENMOD
 	wchar_t *tempString = g_pVGuiLocalize->Find("#Valve_Hud_HEALTH");
 
 	if (tempString)
@@ -104,6 +105,7 @@ void CHudHealth::Reset()
 	{
 		SetLabelText(L"HEALTH");
 	}
+#endif //!OPENMOD
 	SetDisplayValue(m_iHealth);
 }
 

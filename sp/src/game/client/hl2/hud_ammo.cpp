@@ -37,6 +37,9 @@ public:
 	void SetAmmo(int ammo, bool playAnimation);
 	void SetAmmo2(int ammo2, bool playAnimation);
 	virtual void Paint( void );
+#ifdef OPENMOD
+	void ApplySchemeSettings( IScheme *scheme );
+#endif // OPENMOD
 
 protected:
 	virtual void OnThink();
@@ -51,6 +54,13 @@ private:
 	int		m_iAmmo;
 	int		m_iAmmo2;
 	CHudTexture *m_iconPrimaryAmmo;
+#ifdef OPENMOD
+	CPanelAnimationVarAliasType( float, icon_xpos, "icon_xpos", "0", "proportional_float" );
+	CPanelAnimationVarAliasType( float, icon_ypos, "icon_ypos", "0", "proportional_float" );
+
+	float icon_tall;
+	float icon_wide;
+#endif // OPENMOD
 };
 
 DECLARE_HUDELEMENT( CHudAmmo );
@@ -77,7 +87,12 @@ void CHudAmmo::Init( void )
 	m_iAmmo2	= -1;
 	
 	m_iconPrimaryAmmo = NULL;
+#ifdef OPENMOD
+	icon_tall	= 0;
+	icon_wide	= 0;
+#endif //OPENMOD
 
+#ifndef OPENMOD
 	wchar_t *tempString = g_pVGuiLocalize->Find("#Valve_Hud_AMMO");
 	if (tempString)
 	{
@@ -87,6 +102,7 @@ void CHudAmmo::Init( void )
 	{
 		SetLabelText(L"AMMO");
 	}
+#endif //!OPENMOD
 }
 
 //-----------------------------------------------------------------------------
@@ -186,6 +202,23 @@ void CHudAmmo::UpdatePlayerAmmo( C_BasePlayer *player )
 		m_hCurrentActiveWeapon = wpn;
 	}
 }
+
+#ifdef OPENMOD
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+void CHudAmmo::ApplySchemeSettings( IScheme *scheme )
+{
+	BaseClass::ApplySchemeSettings( scheme );
+
+	if( m_iconPrimaryAmmo )
+	{
+		icon_tall = GetTall() - YRES(2);
+		float scale = icon_tall / (float)m_iconPrimaryAmmo->Height();
+		icon_wide = ( scale ) * (float)m_iconPrimaryAmmo->Width();
+	}
+}
+#endif //OPENMOD
 
 void CHudAmmo::UpdateVehicleAmmo( C_BasePlayer *player, IClientVehicle *pVehicle )
 {
@@ -338,6 +371,7 @@ void CHudAmmo::Paint( void )
 #ifndef HL2MP
 	if ( m_hCurrentVehicle == NULL && m_iconPrimaryAmmo )
 	{
+#ifndef OPENMOD
 		int nLabelHeight;
 		int nLabelWidth;
 		surface()->GetTextSize( m_hTextFont, m_LabelText, nLabelWidth, nLabelHeight );
@@ -347,6 +381,9 @@ void CHudAmmo::Paint( void )
 		int y = text_ypos - ( nLabelHeight + ( m_iconPrimaryAmmo->Height() / 2 ) );
 		
 		m_iconPrimaryAmmo->DrawSelf( x, y, GetFgColor() );
+#else
+		m_iconPrimaryAmmo->DrawSelf( icon_xpos, icon_ypos, icon_wide, icon_tall, GetFgColor() );
+#endif //!OPENMOD
 	}
 #endif // HL2MP
 }
@@ -368,7 +405,12 @@ public:
 
 	void Init( void )
 	{
-#ifndef HL2MP
+#ifdef OPENMOD
+		icon_tall	= 0;
+		icon_wide	= 0;
+#endif //OPENMOD
+
+#ifndef OPENMOD
 		wchar_t *tempString = g_pVGuiLocalize->Find("#Valve_Hud_AMMO_ALT");
 		if (tempString)
 		{
@@ -378,7 +420,7 @@ public:
 		{
 			SetLabelText(L"ALT");
 		}
-#endif // HL2MP
+#endif // !OPENMOD
 	}
 
 	void VidInit( void )
@@ -426,6 +468,7 @@ public:
 #ifndef HL2MP
 		if ( m_iconSecondaryAmmo )
 		{
+#ifndef OPENMOD
 			int nLabelHeight;
 			int nLabelWidth;
 			surface()->GetTextSize( m_hTextFont, m_LabelText, nLabelWidth, nLabelHeight );
@@ -435,6 +478,9 @@ public:
 			int y = text_ypos - ( nLabelHeight + ( m_iconSecondaryAmmo->Height() / 2 ) );
 
 			m_iconSecondaryAmmo->DrawSelf( x, y, GetFgColor() );
+#else
+			m_iconSecondaryAmmo->DrawSelf( icon_xpos, icon_ypos, icon_wide, icon_tall, GetFgColor() );
+#endif // !OPENMOD
 		}
 #endif // HL2MP
 	}
@@ -491,11 +537,32 @@ protected:
 			m_iconSecondaryAmmo = gWR.GetAmmoIconFromWeapon( m_hCurrentActiveWeapon->GetSecondaryAmmoType() );
 		}
 	}
+
+#ifdef OPENMOD
+	void ApplySchemeSettings( IScheme *scheme )
+	{
+		BaseClass::ApplySchemeSettings( scheme );
+
+		if( m_iconSecondaryAmmo )
+		{
+			icon_tall = GetTall() - YRES(2);
+			float scale = icon_tall / (float)m_iconSecondaryAmmo->Height();
+			icon_wide = ( scale ) * (float)m_iconSecondaryAmmo->Width();
+		}
+	}
+#endif //OPENMOD
 	
 private:
 	CHandle< C_BaseCombatWeapon > m_hCurrentActiveWeapon;
 	CHudTexture *m_iconSecondaryAmmo;
 	int		m_iAmmo;
+#ifdef OPENMOD
+	CPanelAnimationVarAliasType( float, icon_xpos, "icon_xpos", "0", "proportional_float" );
+	CPanelAnimationVarAliasType( float, icon_ypos, "icon_ypos", "0", "proportional_float" );
+
+	float icon_tall;
+	float icon_wide;
+#endif // OPENMOD
 };
 
 DECLARE_HUDELEMENT( CHudSecondaryAmmo );

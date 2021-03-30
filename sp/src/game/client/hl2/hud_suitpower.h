@@ -45,12 +45,14 @@ private:
 	CPanelAnimationVarAliasType( float, m_flBarChunkWidth, "BarChunkWidth", "10", "proportional_float" );
 	CPanelAnimationVarAliasType( float, m_flBarChunkGap, "BarChunkGap", "2", "proportional_float" );
 
+#ifndef OPENMOD
 	CPanelAnimationVar( vgui::HFont, m_hTextFont, "TextFont", "Default" );
 	CPanelAnimationVarAliasType( float, text_xpos, "text_xpos", "8", "proportional_float" );
 	CPanelAnimationVarAliasType( float, text_ypos, "text_ypos", "20", "proportional_float" );
 	CPanelAnimationVarAliasType( float, text2_xpos, "text2_xpos", "8", "proportional_float" );
 	CPanelAnimationVarAliasType( float, text2_ypos, "text2_ypos", "40", "proportional_float" );
 	CPanelAnimationVarAliasType( float, text2_gap, "text2_gap", "10", "proportional_float" );
+#endif // !OPENMOD
 
 #ifdef OPENMOD
 	CPanelAnimationVarAliasType( float, icon_xpos, "icon_xpos", "0", "proportional_float" );
@@ -59,7 +61,9 @@ private:
 
 	float m_flSuitPower;
 	int m_nSuitPowerLow;
+#ifndef OPENMOD
 	int m_iActiveSuitDevices;
+#endif // !OPENMOD
 
 #ifdef OPENMOD
 	CHudTexture *m_pSprintIcon;

@@ -41,7 +41,9 @@ void CHudSuitPower::Init( void )
 {
 	m_flSuitPower = SUITPOWER_INIT;
 	m_nSuitPowerLow = -1;
+#ifndef OPENMOD
 	m_iActiveSuitDevices = 0;
+#endif // !OPENMOD
 #ifdef OPENMOD
 	icon_tall = 0;
 	icon_wide = 0;
@@ -125,6 +127,7 @@ void CHudSuitPower::OnThink( void )
 		g_pClientMode->GetViewportAnimationController()->StartAnimationSequence("SuitAuxPowerNotMax");
 	}
 
+#ifndef OPENMOD
 	bool flashlightActive = pPlayer->IsFlashlightActive();
 	bool sprintActive = pPlayer->IsSprinting();
 	bool breatherActive = pPlayer->IsBreatherActive();
@@ -166,7 +169,7 @@ void CHudSuitPower::OnThink( void )
 			break;
 		}
 	}
-
+#endif //!OPENMOD
 	m_flSuitPower = flCurrentPower;
 }
 
@@ -197,7 +200,11 @@ void CHudSuitPower::Paint()
 	}
 	if (m_nSuitPowerLow != lowPower)
 	{
+#ifndef OPENMOD
 		if (m_iActiveSuitDevices || m_flSuitPower < 100.0f)
+#else
+		if (m_flSuitPower < 100.0f)
+#endif //!OPENMOD
 		{
 			if (lowPower)
 			{
@@ -219,6 +226,7 @@ void CHudSuitPower::Paint()
 		surface()->DrawFilledRect( xpos, ypos, xpos + m_flBarChunkWidth, ypos + m_flBarHeight );
 		xpos += (m_flBarChunkWidth + m_flBarChunkGap);
 	}
+
 	// draw the exhausted portion of the bar.
 	surface()->DrawSetColor( Color( m_AuxPowerColor[0], m_AuxPowerColor[1], m_AuxPowerColor[2], m_iAuxPowerDisabledAlpha ) );
 	for (int i = enabledChunks; i < chunkCount; i++)
@@ -227,6 +235,7 @@ void CHudSuitPower::Paint()
 		xpos += (m_flBarChunkWidth + m_flBarChunkGap);
 	}
 
+#ifndef OPENMOD
 	// draw our name
 	surface()->DrawSetTextFont(m_hTextFont);
 	surface()->DrawSetTextColor(m_AuxPowerColor);
@@ -352,6 +361,7 @@ void CHudSuitPower::Paint()
 		}
 #endif
 	}
+#endif //!OPENMOD
 }
 
 

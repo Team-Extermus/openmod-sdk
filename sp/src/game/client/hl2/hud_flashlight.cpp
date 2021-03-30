@@ -28,6 +28,9 @@ class CHudFlashlight : public CHudElement, public vgui::Panel
 
 public:
 	CHudFlashlight( const char *pElementName );
+#ifdef OPENMOD
+	virtual void OnThink();
+#endif //OPENMOD
 	virtual void ApplySchemeSettings( vgui::IScheme *pScheme );
 
 protected:
@@ -49,6 +52,10 @@ private:
 	CPanelAnimationVarAliasType( float, m_flBarHeight, "BarHeight", "2", "proportional_float" );
 	CPanelAnimationVarAliasType( float, m_flBarChunkWidth, "BarChunkWidth", "2", "proportional_float" );
 	CPanelAnimationVarAliasType( float, m_flBarChunkGap, "BarChunkGap", "2", "proportional_float" );
+
+#ifdef OPENMOD
+	bool m_bSuitAuxPowerUsed;
+#endif //OPENMOD
 };	
 
 using namespace vgui;
@@ -66,7 +73,45 @@ CHudFlashlight::CHudFlashlight( const char *pElementName ) : CHudElement( pEleme
 	SetParent( pParent );
 
 	SetHiddenBits( HIDEHUD_HEALTH | HIDEHUD_PLAYERDEAD | HIDEHUD_NEEDSUIT );
+
+#ifdef OPENMOD
+	m_bSuitAuxPowerUsed = false;
+#endif //OPENMOD
 }
+
+#ifdef OPENMOD
+//-----------------------------------------------------------------------------
+// Purpose: Updates the label color each frame
+//-----------------------------------------------------------------------------
+void CHudFlashlight::OnThink()
+{
+	C_BaseHLPlayer *pLocalPlayer = (C_BaseHLPlayer *)C_BasePlayer::GetLocalPlayer();
+	if ( pLocalPlayer == NULL )
+		 return;
+
+	if ( pLocalPlayer->IsAlive() == false )
+		 return;
+
+	if ( pLocalPlayer->m_HL2Local.m_flSuitPower < 100 )
+	{
+		if ( m_bSuitAuxPowerUsed == false )
+		{
+			g_pClientMode->GetViewportAnimationController()->StartAnimationSequence( "MoveDownFlashlight" );
+			m_bSuitAuxPowerUsed = true;
+		}
+	}
+	else
+	{
+		if ( m_bSuitAuxPowerUsed == true )
+		{
+			g_pClientMode->GetViewportAnimationController()->StartAnimationSequence( "MoveUpFlashlight" );
+			m_bSuitAuxPowerUsed = false;
+		}
+	}
+
+	InvalidateLayout();
+}
+#endif //OPENMOD
 
 //-----------------------------------------------------------------------------
 // Purpose: 

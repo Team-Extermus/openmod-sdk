@@ -89,7 +89,9 @@ void CHudBattery::Init( void )
 //-----------------------------------------------------------------------------
 void CHudBattery::Reset( void )
 {
+#ifndef OPENMOD
 	SetLabelText(g_pVGuiLocalize->Find("#Valve_Hud_SUIT"));
+#endif //!OPENMOD
 	SetDisplayValue(m_iBat);
 }
 
