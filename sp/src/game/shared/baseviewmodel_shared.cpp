@@ -435,6 +435,10 @@ void CBaseViewModel::CalcViewModelView( CBasePlayer *owner, const Vector& eyePos
 	if ( pWeapon != NULL )
 #endif // OPENMOD
 	{
+#ifdef OPENMOD
+		if ( pWeapon != NULL )
+		{
+#endif // OPENMOD
 #if defined( CLIENT_DLL )
 		if ( !prediction->InPrediction() )
 #endif
@@ -445,6 +449,9 @@ void CBaseViewModel::CalcViewModelView( CBasePlayer *owner, const Vector& eyePos
 			CalcViewModelLag( vmorigin, vmangles, vmangoriginal );
 #endif
 		}
+#ifdef OPENMOD
+		}
+#endif // OPENMOD
 	}
 	// Add model-specific bob even if no weapon associated (for head bob for off hand models)
 	AddViewModelBob( owner, vmorigin, vmangles );
